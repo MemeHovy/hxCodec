@@ -1,12 +1,12 @@
 # hxCodec
 
-![](https://img.shields.io/github/repo-size/polybiusproxy/hxCodec) ![](https://badgen.net/github/open-issues/polybiusproxy/hxCodec) ![](https://badgen.net/badge/license/MPL2.0/green)
+![](https://img.shields.io/github/repo-size/moxie-coder/hxCodec) ![](https://badgen.net/github/open-issues/moxie-coder/hxCodec) ![](https://badgen.net/badge/license/MPL2.0/green)
 
 A Haxe library which adds native video playback on [HaxeFlixel](https://haxeflixel.com) and [OpenFL](https://www.openfl.org).
 
 `hxCodec` is powered by [libVLC](https://www.videolan.org/vlc/libvlc.html).
 
-**[Click here to check the roadmap](https://github.com/polybiusproxy/hxCodec/projects/1)**
+**[Click here to check the roadmap](https://github.com/moxie-coder/hxCodec/projects/1)**
 
 ## Instructions
 
@@ -17,7 +17,7 @@ A Haxe library which adds native video playback on [HaxeFlixel](https://haxeflix
 
     You can also install it through `Git` to get the latest changes.
     ```bash
-    haxelib git hxCodec https://github.com/polybiusproxy/hxCodec
+    haxelib git hxCodec https://github.com/moxie-coder/hxCodec
     ```
 
 2. Add this code in the ***project.xml*** file.
