@@ -1,71 +1,115 @@
-# hxCodec
+# hxCodec - Native video support for OpenFL & HaxeFlixel
 
-![](https://img.shields.io/github/repo-size/moxie-coder/hxCodec) ![](https://badgen.net/github/open-issues/moxie-coder/hxCodec) ![](https://badgen.net/badge/license/MPL2.0/green)
+[Original Repository](https://github.com/polybiusproxy/PolyEngine).  
+[Click here to check the roadmap of hxCodec](https://github.com/brightfyregit/Friday-Night-Funkin-Mp4-Video-Support/projects/1).
 
-A Haxe library which adds native video playback on [HaxeFlixel](https://haxeflixel.com) and [OpenFL](https://www.openfl.org).
-
-`hxCodec` is powered by [libVLC](https://www.videolan.org/vlc/libvlc.html).
-
-**[Click here to check the roadmap](https://github.com/moxie-coder/hxCodec/projects/1)**
+## Table of Contents
+- [Instructions](#instructions)  
+- [Building](#building)  
+- [Credits](#credits)  
 
 ## Instructions
+**These are for Friday Night Funkin' mostly so it may not work for your HaxeFlixel project.**
 
-1. Install the latest stable version of `hxCodec` by running the following haxelib command.
-    ```bash
-    haxelib install hxCodec
-    ```
+### 1. Install the Haxelib:
 
-    You can also install it through `Git` to get the latest changes.
-    ```bash
-    haxelib git hxCodec https://github.com/moxie-coder/hxCodec
-    ```
-
-2. Add this code in the ***project.xml*** file.
-    ```xml
-    <haxelib name="hxCodec" if="desktop || android" />
-    ```
-
-    **OPTIONAL: Some defines you can add to your project**
-    ```xml
-    <!-- LibVLC Logging for hxCodec -->
-    <haxedef name="HXC_LIBVLC_LOGGING" if="debug" />
-    ```
-
-## Linux Specific Instructions
-
-In order to build a application with the library on ***Linux***, you **have to install** `libvlc` and `libvlccore` from your distro's package manager.
-
-### Debian based distributions:
-```bash
-sudo apt-get install libvlc-dev libvlccore-dev 
+```cmd
+haxelib git hxCodec https://github.com/polybiusproxy/hxCodec.git
 ```
 
-### Arch based distributions:
-```bash
-sudo pacman -S vlc 
+### 2. Create a folder called `videos` in `assets/preload` folder:
+
+### 3. **OPTIONAL: If your PC is ARM64, add this code in `Project.xml`:**
+
+```xml
+<haxedef name="HXCPP_ARM64" />
 ```
 
-## Usage Example
+### 3. Edit `Paths.hx`
+```haxe
+inline static public function video(key:String, ?library:String)
+{
+	return getPath('videos/$key.mp4', BINARY, library);
+}
+```
 
-Check out the [Samples Folder](samples/) for examples on how to use this library.
+### 4. Playing videos
 
-## Licensing
-**hxCodec** is made available under the **Mozilla Public License 2.0**. Check [LICENSE](./LICENSE) for more information.
+1. Put your video in `assets/preload/videos`.
+2. Create somewhere in PlayState:
+```haxe
+import vlc.MP4Handler;
 
-*Haxelib does not support MPL2*
-therefore, regardless of what Haxelib reports, this library's license is still **MPL2.0**.
+var video:MP4Handler;
 
-![](https://raw.githubusercontent.com/videolan/vlc/master/share/icons/256x256/vlc.png)
+function playCutscene(name:String)
+{
+	inCutscene = true;
 
-[***libVLC***](https://www.videolan.org/vlc/libvlc.html) is the engine of **VLC** released under the **LGPLv2 License** (or later). Check [VideoLAN.org](https://www.videolan.org/legal.html) for more information.
+	video = new MP4Handler();
+	video.finishCallback = function()
+	{
+		startCountdown();
+	}
+	video.playVideo(Paths.video(name));
+}
+
+function playEndCutscene(name:String)
+{
+	inCutscene = true;
+
+	video = new MP4Handler();
+	video.finishCallback = function()
+	{
+		SONG = Song.loadFromJson(storyPlaylist[0].toLowerCase());
+		LoadingState.loadAndSwitchState(new PlayState());
+	}
+	video.playVideo(Paths.video(name));
+}
+```
+
+### EXAMPLE
+At the PlayState "create()" function:
+```haxe
+switch (curSong.toLowerCase())
+{
+	case 'too-slow':
+		playCutscene('tooslowcutscene1');
+	case 'you-cant-run':
+		playCutscene('tooslowcutscene2');
+	default:
+		startCountdown();
+}
+```
+
+At the PlayState "endSong()" function:
+```haxe
+if (SONG.song.toLowerCase() == 'triple-trouble')
+	playEndCutscene('soundtestcodes');
+```
+
+## BUILDING
+### Windows
+You don't need any special instructions in order to build for Windows.
+Just pull the "lime build windows".
+
+### Linux
+In order to make your game work with the library, every Linux user (this includes the player) **has to download** "libvlc-dev" and "libvlccore-dev" from your distro's package manager.
+You can also install them through the terminal:
+```bash
+sudo apt-get install libvlc-dev
+sudo apt-get install libvlccore-dev
+```
+
+### Android
+Currently, hxCodec will search the videos only on the external storage (`/storage/emulated/0/appname/yourvideo.mp4`).
+This is not suitable for games and will be fixed soon.
 
 ## Credits
 
-| Avatar | UserName | Involvement |
-| ------ | -------- | ----------- |
-| ![](https://avatars.githubusercontent.com/u/47796739?s=64) | [polybiusproxy](https://github.com/polybiusproxy) | Creator of **hxCodec**.
-| ![](https://avatars.githubusercontent.com/u/1677550?s=64) | [datee](https://github.com/datee) | Creator of **HaxeVLC**.
-| ![](https://avatars.githubusercontent.com/u/77043862?s=64) | [MAJigsaw77](https://github.com/MAJigsaw77) | Programmer, Android & Linux support.
-| ![](https://avatars.githubusercontent.com/u/84131849?s=64) | [RapperGF](https://github.com/RapperGF) | Rendering Overhaul & Testing.
-| ![](https://avatars.githubusercontent.com/u/49110074?s=64) | [swordcube](https://github.com/swordcube) | Testing Linux Support. 
-| ![](https://avatars.githubusercontent.com/u/107599365?v=64) | [Jonnycat](https://github.com/JonnycatMeow) | MacOS Support.
+- [PolybiusProxy (me!)](https://github.com/polybiusproxy) - Creator of hxCodec.
+- [datee](https://github.com/datee) - Creator of HaxeVLC.
+- [BrightFyre](https://github.com/brightfyregit) - Creator of repository.
+- [GWebDev](https://github.com/GrowtopiaFli) - Inspiring me to do this.
+- [CryBit](https://github.com/CryBitDev) - fixing my shit lolololoolol
+- The contributors. <!-- forgot this existed and i added contributors on the credits lol -->
